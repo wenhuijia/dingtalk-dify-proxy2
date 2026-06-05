@@ -1,14 +1,1 @@
-{
-  "functions": {
-    "api/dingtalk.js": {
-      "runtime": "nodejs20.x"
-    }
-  },
-  "routes": [
-    {
-      "src": "/api/dingtalk",
-      "dest": "/api/dingtalk.js",
-      "methods": ["POST"]
-    }
-  ]
-}
+{"functions":{"api/dingtalk.js":{"runtime":"nodejs20.x"}},"routes":[{"src":"/api/dingtalk","dest":"/api/dingtalk.js","methods":["POST"]}]}
