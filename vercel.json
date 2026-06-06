@@ -1,1 +1,5 @@
-{"rewrites":[{"source":"/api/dingtalk","destination":"/api/dingtalk.js"}]}
+{
+  "rewrites": [
+    { "source": "/api/dingtalk", "destination": "/api/dingtalk.js" }
+  ]
+}
