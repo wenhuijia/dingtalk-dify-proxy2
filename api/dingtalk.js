@@ -1,5 +1,6 @@
 // api/dingtalk.js
-// 改用 module.exports
+
+// ⚠️ 关键修改：使用 module.exports 替代 export default
 module.exports = async function handler(req, res) {
   // 仅允许 POST 请求
   if (req.method !== 'POST') {
@@ -10,15 +11,23 @@ module.exports = async function handler(req, res) {
     const difyBaseUrl = process.env.DIFY_BASE_URL;
     const difyApiKey = process.env.DIFY_API_KEY;
 
-    // ⚠️ 关键：根据钉钉推送的消息体，提取用户输入并构造 Dify 请求
-    // 钉钉机器人消息接收格式参考：https://open.dingtalk.com/document/orgapp/receive-message
+    // 检查环境变量是否配置（防止空指针报错）
+    if (!difyBaseUrl || !difyApiKey) {
+      console.error('Missing Environment Variables');
+      return res.status(500).json({
+        msgtype: 'text',
+        text: { content: '服务器配置错误：缺少 DIFY 环境变量' }
+      });
+    }
+
+    // 钉钉机器人消息接收格式参考
     const { text: { content }, senderStaffId } = req.body;
-    
+
     const difyPayload = {
       inputs: {},
-      query: content?.trim() || '', // 用户 @ 机器人的文本
-      response_mode: 'blocking',   // 同步等待 Dify 返回结果
-      user: senderStaffId          // 用钉钉用户ID作为 Dify 会话标识
+      query: content?.trim() || '',
+      response_mode: 'blocking',
+      user: senderStaffId || 'unknown_user'
     };
 
     // 调用 Dify Chat API
@@ -37,18 +46,17 @@ module.exports = async function handler(req, res) {
 
     const difyData = await difyRes.json();
 
-    // ✅ 按钉钉机器人回复格式返回（纯文本示例）
-    // 如需卡片/Markdown，请修改 msgtype 和对应字段
-    res.status(2idot).json({
+    // 返回钉钉格式
+    res.status(200).json({
       msgtype: 'text',
       text: { content: difyData.answer || '抱歉，我暂时无法回答这个问题。' }
     });
 
   } catch (err) {
     console.error('Proxy Error:', err);
-    res.status(500).json({ 
-      msgtype: 'text', 
-      text: { content: '服务异常，请稍后再试' } 
+    res.status(500).json({
+      msgtype: 'text',
+      text: { content: '服务异常，请稍后再试' }
     });
   }
 }
