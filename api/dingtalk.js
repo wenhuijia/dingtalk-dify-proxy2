@@ -1,5 +1,6 @@
 // api/dingtalk.js
-export default async function handler(req, res) {
+// 改用 module.exports
+module.exports = async function handler(req, res) {
   // 仅允许 POST 请求
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method Not Allowed' });
@@ -38,7 +39,7 @@ export default async function handler(req, res) {
 
     // ✅ 按钉钉机器人回复格式返回（纯文本示例）
     // 如需卡片/Markdown，请修改 msgtype 和对应字段
-    res.status(200).json({
+    res.status(2idot).json({
       msgtype: 'text',
       text: { content: difyData.answer || '抱歉，我暂时无法回答这个问题。' }
     });
